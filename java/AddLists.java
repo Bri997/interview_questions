@@ -36,73 +36,44 @@ public class AddLists {
     return head;
   }
 
-  private static ListNode add(ListNode l1, ListNode l2){
-    boolean carry = false;
-    ListNode head1 = l1;
-    ListNode head2 = l2;
-    while(l1 != null && l2 != null){
-      int s = carry ? l1.getData() + l2.getData() + 1 : l1.getData() + l2.getData();
-      if( s >= 10 ){
-        s = s % 10;
-        carry = true;
-      }
-      else{
-        carry = false;
-      }
-      l1.setData(s);
-      l2.setData(s);
-      l1 = l1.next();
-      l2 = l2.next();
-    }
-    if( l1 != null ){
-      while(l1 != null){
-        int s = carry ? l1.getData() + 1 : l1.getData();
-        if( s >= 10 ){
-          s = s % 10;
-          carry = true;
-        }
-        else{
-          carry = false;
-        }
-        l1.setData(s);
-        if(l1.next == null && carry){
-          l1.next = new ListNode(1);
-          carry = false;
-        }
-        l1 = l1.next();
-      }
-      return head1;
-    }
-    else{
-      while(l2 != null){
-        int s = carry ? l2.getData() + 1 : l2.getData();
-        if( s >= 10 ){
-          s = s % 10;
-          carry = true;
-        }
-        else{
-          carry = false;
-        }
-        l2.setData(s);
-        if(l1.next == null && carry){
-          l1.next = new ListNode(1);
-          carry = false;
-        }
-        l2 = l2.next();
-      }
-      return head2;
+  private static void printList( ListNode ptr ){
+    while(ptr != null){
+      System.out.print(ptr.getData() + " ");
+      ptr = ptr.next();
     }
   }
+
+  private static ListNode add(ListNode l1, ListNode l2){
+    ListNode starter = new ListNode(0);
+    ListNode current = starter;
+    ListNode p = l1;
+    ListNode q = l2;
+    int carry = 0;
+
+    while(p != null || q != null){
+      int a = p != null ? p.getData() : 0;
+      int b = q != null ? q.getData() : 0;
+      int sum = a + b + carry;
+      carry = sum / 10;
+      current.next = new ListNode(sum % 10);
+      current = current.next();
+      if(p != null) p = p.next();
+      if(q != null) q = q.next();
+    }
+    if(carry > 0){
+      current.next = new ListNode(carry);
+    }
+    return starter.next();
+  }
+
+  // Solution to Leetcode https://leetcode.com/problems/add-two-numbers/
   public static void main(String[] args){
     int[] a = {9, 9, 9};
-    int[] b = {1};
+    int[] b = {1, 1, 1};
     ListNode l1 = createList(a);
     ListNode l2 = createList(b);
     ListNode sum = add(l1, l2);
-    while(sum != null){
-      System.out.println(sum.getData());
-      sum=sum.next();
-    }
+    printList(sum); // this example should return 0 1 1 1 when reversed is 1 1 1 0
   }
 
 }
